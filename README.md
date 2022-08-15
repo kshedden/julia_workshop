@@ -5,10 +5,10 @@ Introduction to Julia for Statisticians and Data Scientists
 
 ## Using Julia on Greatlakes
 
-* You will need a cluster account, see [Great lakes user guide](https://arc.umich.edu/greatlakes/user-guide).
+* You will need a cluster account, see the [Great Lakes user guide](https://arc.umich.edu/greatlakes/user-guide).
 
 * Connect using ssh to `greatlakes.arc-ts.umich.edu`.
 
-* Type `module load julia`
+* Type `module load julia`.
 
 * Type `julia` to begin the session.
