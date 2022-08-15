@@ -73,15 +73,15 @@ be missing.
 ==#
 
 cc1 = combine(groupby(da, [:un_region, :gender]), nrow)
-ct1 = unstack(cc1, :gender, :nrow; allowmissing=true)
+ct1 = unstack(cc1, :gender, :nrow; allowmissing = true)
 
 cc2 = combine(groupby(da, [:un_region, :level1_main_occ, :gender]), nrow)
-ct2 = unstack(cc2, :un_region, :nrow; allowmissing=true)
+ct2 = unstack(cc2, :un_region, :nrow; allowmissing = true)
 
 # Replace missing values in the pivot table with zero
 for c in eachcol(ct2)
     if eltype(c) <: Number
-        replace!(c, missing=>0)
+        replace!(c, missing => 0)
     end
 end
 
@@ -98,7 +98,7 @@ v = collect(v)
 plt1 = histogram(v)
 
 # Visualize the distributions of lifespans by gender
-db = filter(r->!ismissing(r.gender), da)
+db = filter(r -> !ismissing(r.gender), da)
 u = groupby(db, :gender)
 v = [collect(skipmissing(x[:, :lifespan])) for x in u]
 t = [first(x[:, :gender]) for x in u]
@@ -118,27 +118,27 @@ for a in [:birth, :lifespan]
 end
 
 # To work around censoring, consider people born before 1910
-dz = filter(r->r.birth <= 1910, dx)
+dz = filter(r -> r.birth <= 1910, dx)
 
 # Plot the conditional mean of lifespan given birth
 m = loess(dz[:, :birth], dz[:, :lifespan])
 xs = range(extrema(dz[:, :birth])...)
 ys = Loess.predict(m, xs)
-plt3 = scatterplot(xs, ys, canvas=BlockCanvas)
+plt3 = scatterplot(xs, ys, canvas = BlockCanvas)
 
 # Consider only last 1000 years where most of the data are,
 # then plot the conditional mean of lifespan given birth
-dx = filter(r->r.birth >= 1000, dx)
+dx = filter(r -> r.birth >= 1000, dx)
 m = loess(dz[:, :birth], dz[:, :lifespan])
 xs = range(extrema(dz[:, :birth])...)
 ys = predict(m, xs)
-plt4 = scatterplot(xs, ys, canvas=BlockCanvas)
+plt4 = scatterplot(xs, ys, canvas = BlockCanvas)
 
 # Estimate the conditional means of lifespan given
 # birth for females and males separately
 rr = []
 for sex in ["Female", "Male"]
-    dxx = filter(r->r.gender == sex, dx)
+    dxx = filter(r -> r.gender == sex, dx)
     m = loess(dxx[:, :birth], dxx[:, :lifespan])
     xs = range(extrema(dxx[:, :birth])...)
     ys = predict(m, xs)
@@ -146,20 +146,19 @@ for sex in ["Female", "Male"]
 end
 
 # Plot the sex-specific conditional mean lifespans
-plt5 = lineplot(rr[1]..., name="Female", xlim=[1000, 1900])
-lineplot!(plt5, rr[2]..., name="Male")
+plt5 = lineplot(rr[1]..., name = "Female", xlim = [1000, 1900])
+lineplot!(plt5, rr[2]..., name = "Male")
 
 # Summary statistics of lifespan for people born in each century
 da[:, :birth_century] = 100 .* floor.(da[:, :birth] ./ 100)
 gda = groupby(da, :birth_century)
-cc = combine(gda, nrow, :lifespan=>x->mean(skipmissing(x)))
-cc = rename(cc, :lifespan_function=>:lifespan_mean)
-uu = combine(gda, :lifespan=>x->std(skipmissing(x)))
+cc = combine(gda, nrow, :lifespan => x -> mean(skipmissing(x)))
+cc = rename(cc, :lifespan_function => :lifespan_mean)
+uu = combine(gda, :lifespan => x -> std(skipmissing(x)))
 cc[:, :lifespan_std] = uu[:, :lifespan_function]
 
 db = da[:, [:gender, :birth_century, :un_region, :level1_main_occ]]
 db = db[completecases(db), :]
-db = filter(r->r[:birth_century] > 1000, db)
+db = filter(r -> r[:birth_century] > 1000, db)
 rr = combine(groupby(db, [:birth_century, :un_region, :level1_main_occ, :gender]), nrow)
 rr = unstack(rr, :level1_main_occ, :nrow)
-

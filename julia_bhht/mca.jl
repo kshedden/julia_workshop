@@ -36,8 +36,8 @@ function MCA(Z, d)
     X ./= sum(X)
 
     # Center the indicator matrix
-    r = sum(X, dims=2)[:]
-    c = sum(X, dims=1)[:]
+    r = sum(X, dims = 2)[:]
+    c = sum(X, dims = 1)[:]
     Xc = X - r * c'
 
     # Standardize the indicator matrix
@@ -60,7 +60,7 @@ function MCA(Z, d)
     Js = cumsum(K)
     Js = vcat(1, 1 .+ Js)
     Gv = Vector{Matrix{Float64}}()
-    for j in 1:length(K)
+    for j = 1:length(K)
         g = G[Js[j]:Js[j+1]-1, :]
         push!(Gv, g)
     end
@@ -88,14 +88,14 @@ function make_single_indicator(z)
 
     # The indicator matrix
     X = zeros(n, m)
-    for (i,v) in enumerate(z)
+    for (i, v) in enumerate(z)
         X[i, rd[v]] = 1
     end
 
     # Reverse the recoding dictionary
     rdi = Dict{Int,eltype(z)}()
-    for (k,v) in rd
-       rdi[v] = k
+    for (k, v) in rd
+        rdi[v] = k
     end
 
     return X, rd, rdi
@@ -105,7 +105,7 @@ function make_indicators(Z)
 
     rd, rdr = [], []
     XX = []
-    for j in 1:size(Z, 2)
+    for j = 1:size(Z, 2)
         X, di, dir = make_single_indicator(Z[:, j])
         push!(rd, di)
         push!(rdr, dir)
@@ -116,7 +116,7 @@ function make_indicators(Z)
     return XX, rd, rdr
 end
 
-function plot(UnicodePlots::Module, mca::MCA; x=1, y=2, kwargs...)
+function plot(UnicodePlots::Module, mca::MCA; x = 1, y = 2, kwargs...)
 
     plt = scatterplot(mca.G[1][:, x], mca.G[1][:, y]; kwargs...)
 
@@ -137,7 +137,7 @@ function test1()
     n = 2000
     Z = Matrix{String}(undef, n, 3)
     Z[:, 1] = sample(rng, ["A", "B"], n)
-    for i in 1:n
+    for i = 1:n
         if Z[i, 1] == "A"
             Z[i, 2] = sample(rng, ["1", "2", "3"], Weights([0.8, 0.1, 0.1]))
             Z[i, 3] = sample(rng, ["X", "Y", "Z"], Weights([0.45, 0.45, 0.1]))
@@ -150,7 +150,7 @@ function test1()
     end
 
     mca = MCA(Z, 2)
-    plt = plot(UnicodePlots, mca; height=20, width=60)
+    plt = plot(UnicodePlots, mca; height = 20, width = 60)
     println(plt)
 
 end
@@ -169,8 +169,11 @@ dd = da[:, [:birth, :level1_main_occ, :gender]]
 dd = dd[completecases(dd), :]
 
 # Remove very rare categories
-dd = filter(r->r.gender in ["Female", "Male"], dd)
-dd = filter(r->!ismissing(r.level1_main_occ) && !(r.level1_main_occ in ["Missing", "Other"]), dd)
+dd = filter(r -> r.gender in ["Female", "Male"], dd)
+dd = filter(
+    r -> !ismissing(r.level1_main_occ) && !(r.level1_main_occ in ["Missing", "Other"]),
+    dd,
+)
 
 # Create 10 approximately equal-sized bins
 dd[:, :era] = cut(dd[:, :birth], 10)
@@ -179,7 +182,7 @@ dd = select(dd, Not(:birth))
 dd = Matrix(dd)
 
 # Clean up the year labels
-f = function(x)
+f = function (x)
     m = match(r"(-{0,1}\d{4}).*(-{0,1}\d{4})", x)
     y = m.captures
     y = parse.(Int, y)
@@ -188,6 +191,6 @@ end
 dd[:, 3] = f.(dd[:, 3])
 
 mca = MCA(dd, 3)
-plt1 = plot(UnicodePlots, mca; width=90, height=25, xlim=[-3, 3])
-plt2 = plot(UnicodePlots, mca; x=1, y=3, width=90, height=25, xlim=[-3, 3])
-plt3 = plot(UnicodePlots, mca; x=2, y=3, width=90, height=25, xlim=[-3, 3])
+plt1 = plot(UnicodePlots, mca; width = 90, height = 25, xlim = [-3, 3])
+plt2 = plot(UnicodePlots, mca; x = 1, y = 3, width = 90, height = 25, xlim = [-3, 3])
+plt3 = plot(UnicodePlots, mca; x = 2, y = 3, width = 90, height = 25, xlim = [-3, 3])
