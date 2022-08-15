@@ -3,7 +3,7 @@ Introduction to Julia for Statisticians and Data Scientists
 
 * [julialang.org](https://julialang.org) the main Julia project site
 
-## Using Julia on Greatlakes
+## Using Julia on Great Lakes
 
 * You will need a cluster account, see the [Great Lakes user guide](https://arc.umich.edu/greatlakes/user-guide).
 
