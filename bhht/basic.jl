@@ -17,10 +17,10 @@ The datafile must be in the same directory as this script.
 # these packages (press `]` in the REPL then `add DataFrames`, etc.)
 using DataFrames, CSV, UnicodePlots, Loess, Random, Statistics
 
-# Load a small subset of data.  This is a "do" block
-# that automatically closes the io handle after reading.
+# Load the data.  This is a "do" block that automatically closes
+# the io handle after reading.
 da = open("cross-verified-database.csv.gz") do io
-    CSV.read(io, DataFrame) #; limit=500000)
+    CSV.read(io, DataFrame)
 end
 
 #==
@@ -136,16 +136,20 @@ plt4 = scatterplot(xs, ys, canvas = BlockCanvas)
 
 # Estimate the conditional means of lifespan given
 # birth for females and males separately
-rr = []
-for sex in ["Female", "Male"]
-    dxx = filter(r -> r.gender == sex, dx)
-    m = loess(dxx[:, :birth], dxx[:, :lifespan])
-    xs = range(extrema(dxx[:, :birth])...)
-    ys = predict(m, xs)
-    push!(rr, [xs, ys])
+function lifespan_by_gender()
+    rr = []
+    for sex in ["Female", "Male"]
+        dxx = filter(r -> r.gender == sex, dx)
+        m = loess(dxx[:, :birth], dxx[:, :lifespan])
+        xs = range(extrema(dxx[:, :birth])...)
+        ys = predict(m, xs)
+        push!(rr, [xs, ys])
+    end
+    return rr
 end
 
 # Plot the sex-specific conditional mean lifespans
+rr = lifespan_by_gender()
 plt5 = lineplot(rr[1]..., name = "Female", xlim = [1000, 1900])
 lineplot!(plt5, rr[2]..., name = "Male")
 
