@@ -5,28 +5,29 @@ General information about the project:
 
 https://medialab.github.io/bhht-datascape/
 
-Download the data file from here (cross-verified-database.csv.gz)
-Use `wget` to obtain the data file if you are in a terminal.
+Download the data file (cross-verified-database.csv.gz) from
+the link below.  Use `wget` to obtain the data file if you are
+in a terminal.
 
 https://data.sciencespo.fr/dataset.xhtml?persistentId=doi:10.21410/7E4/RDAG3O
 
 The datafile must be in the same directory as this script.
 ==#
 
-# Packages needed to run this script.  You may need to install
-# these packages (press `]` in the REPL then `add DataFrames`, etc.)
+# These are the packages needed to run this script.  You may need to install
+# them (press `]` in the REPL then `add DataFrames`, etc.)
 using DataFrames, CSV, UnicodePlots, Loess, Random, Statistics
 
-# Load the data.  This is a "do" block that automatically closes
-# the io handle after reading.
+# Load the data into a DataFrame.  This is a "do" block that automatically
+# closes the io handle after reading.
 da = open("cross-verified-database.csv.gz") do io
     CSV.read(io, DataFrame)
 end
 
 #==
-Below are many simple one liners.  The output will be lost when running this
-script, but you can type each of the lines below at the prompt to see the
-output.
+Below are many simple one liners involving DataFrames.  The output will be lost
+when running this script, but you can type each of the lines below at the prompt
+to see the output.
 ==#
 
 # The number of rows and columns
@@ -48,10 +49,10 @@ eltype.(eachcol(da))
 minimum(skipmissing(da[:, :birth]))
 
 # The number of missing values
-count(ismissing.(da[:, :birth]))
+count(ismissing, da[:, :birth])
 
 # The number of non-missing values
-count(.!ismissing.(da[:, :birth]))
+count(!ismissing, da[:, :birth])
 
 # The first and last death year
 extrema(skipmissing(da[:, :death]))
