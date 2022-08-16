@@ -5,9 +5,9 @@ General information about the project:
 
 https://medialab.github.io/bhht-datascape/
 
-Download the data file (cross-verified-database.csv.gz) from
-the link below.  Use `wget` to obtain the data file if you are
-in a terminal.
+Download the data file (cross-verified-database.csv.gz) from the
+link below.  You may need to use a browser so that you can accept
+the terms of use.
 
 https://data.sciencespo.fr/dataset.xhtml?persistentId=doi:10.21410/7E4/RDAG3O
 
