@@ -130,8 +130,8 @@ plt3 = scatterplot(xs, ys, canvas = BlockCanvas)
 # Consider only last 1000 years where most of the data are,
 # then plot the conditional mean of lifespan given birth
 dx = filter(r -> r.birth >= 1000, dx)
-m = loess(dz[:, :birth], dz[:, :lifespan])
-xs = range(extrema(dz[:, :birth])...)
+m = loess(dx[:, :birth], dx[:, :lifespan])
+xs = range(extrema(dx[:, :birth])...)
 ys = predict(m, xs)
 plt4 = scatterplot(xs, ys, canvas = BlockCanvas)
 
