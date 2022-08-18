@@ -69,23 +69,19 @@ plt3 = lineplot(
 lineplot!(plt3, age, yh[21:end], name = "Male")
 println(plt3)
 
+# Create a design matrix for comparing BMI=30 to BMI=25, with all
+# other factors held fixed.
 xx[:, :RIAGENDR] .= "Female"
 xx[1:20, :BMXBMI] .= 30
 xx[21:40, :BMXBMI] .= 25
 
-# Get a design matrix from fitted model mm, using the data
-# in dataframe da.
-function get_design(mm, da)
-    f = mm.mf.f
-    return modelcols(f.rhs, da)
-end
-
+# The contrast design matrix
 xx3 = get_design(m3, xx)
-
 x1 = xx3[1:20, :]
 x2 = xx3[21:end, :]
 xd = x1 - x2
 
+# Get the predicted difference and standard errors.
 yd = xd * coef(m3)
 va = xd * vcov(m3) * xd'
 se = sqrt.(diag(va))
@@ -112,6 +108,7 @@ fml = @formula(ALQ130 ~ (age1 + age2 + age3 + age4) * RIAGENDR + RIDRETH1)
 
 m4 = glm(fml, dat1, Poisson())
 
+# Modify the design matrix to contrast females to males.
 xx[1:20, :RIAGENDR] .= "Female"
 xx[21:40, :RIAGENDR] .= "Male"
 
@@ -120,6 +117,7 @@ yp = predict(m4, xx) |> x -> Float64.(x)
 yf = yp[1:20]
 ym = yp[21:end]
 
+# Plot fitted mean curves for females and males
 plt5 = lineplot(
     age,
     yf,
@@ -133,6 +131,8 @@ plt5 = lineplot(
 lineplot!(plt5, age, ym, name = "Male")
 println(plt5)
 
+# Plot the log ratio of expected ALQ130 values for females and males,
+# with a confidence band.
 xx4 = get_design(m4, xx)
 x4f = xx4[1:20, :]
 x4m = xx4[21:end, :]

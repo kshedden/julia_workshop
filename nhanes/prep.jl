@@ -1,14 +1,7 @@
 #==
 Regression analysis of NHANES data
 
-Obtain the files listed below using a web browser or using wget
-on the command line, and place them into a subdirectory named
-'data':
-
-https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/DEMO_J.XPT
-https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/BPX_J.XPT
-https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/BMX_J.XPT
-https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/ALQ_J.XPT
+Run the 'download.jl' script to obtain the data files.
 ==#
 
 using ReadStatTables, DataFrames
@@ -51,4 +44,11 @@ function rbasis(x::AbstractArray, vname::Symbol, d::Int, s::Int, bname::String)
         end
     end
     return f!
+end
+
+# Get a design matrix from fitted model mm, using the data
+# in dataframe da.
+function get_design(mm, da)
+    f = mm.mf.f
+    return modelcols(f.rhs, da)
 end
